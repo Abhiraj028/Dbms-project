@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url(../../images/SignUpPage.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.cover {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15vw;
+}
+
+.Lside {
+    width: 31.25vw;
+    margin-top: -20.83vh;
+    margin-left: -15.625vw;
+}
+
+.Lside-title {
+    font-size: 3.33vw;
+    font-weight: bold;
+}
+
+.Lside-desc {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Rside {
+    margin-top: 20.83vh;
+    background-color: rgba(255,255,255,0.2);
+    padding: 2vw;
+    border-radius: 1.67vw;
+    margin-right: -10.42vw;
+}
+
+.Rside-title {
+    font-size: 1.67vw;
+    font-weight: bold;
+}
+
+.input {
+    font-size: large;
+    padding: 0.5vw;
+    width: 18.23vw;
+}
+
+.remember-me-parent {
+    display: flex;
+    gap: 0.21vw;
+}
