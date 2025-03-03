@@ -121,3 +121,19 @@ body {
     font-size: 14px;
     transition: all 0.2s ease;
 }
+
+.account-prompt {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: white;
+    margin-bottom: -2vh;
+}
+
+.account-prompt a {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
