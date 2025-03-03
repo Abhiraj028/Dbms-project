@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-image: url(../../images/login-background.jpeg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    height: 100vh;
+}
+
+.outer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:5vh;
+    padding-top: 5vh;
+}
+
+.center-login{
+    background-color: rgba(11, 12, 12, 0.7);
+    padding: 2.5vw;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(5px);
+}
+
+.center-title{
+    font-size: 32px;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+}
+
+.center-under{
+    color: #4ecdc4;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+.input {
+    font-size: 16px;
+    padding: 12px 15px;
+    width: 18.23vw;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    margin-bottom: 16px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.input:focus {
+    background-color: white;
+    box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.5);
+}
+
+.remember-me-parent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+}
+
+.btn-forgot-password {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.sign-in-btn {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #3db9b1;
+    color: white;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.forgot-password {
+    text-decoration: none;
+    color: #4ecdc4;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
