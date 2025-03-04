@@ -3,43 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Log In</title>
     <link rel="stylesheet" href="style-login.css">
 </head>
 <body>
     <div class="outer">
         <div class="center-logo">
-            <img src="../../images/the-north-face.png" >
+            <img src="../../images/the-north-face.png" alt="The North Face Logo">
         </div>
         <div class="center-login">
             <p class="center-title">Log In</p>
 
             <div class="center-under">
-                
-                <p class="username-heading login-heading">UserName</p>
-                <input class="username-input input" type="text">
-                
-                <p class="email-heading login-heading">Email Address</p>
-                <input class="email-text input" type="text">
+                <form id="loginForm">
+                    <p class="email-heading login-heading">Email Address</p>
+                    <input class="email-text input" type="email" name="email" required>
 
-                <p class="password-heading login-heading">Password</p>
-                <input class="password-text input" type="password">
+                    <p class="password-heading login-heading">Password</p>
+                    <input class="password-text input" type="password" name="password" required>
 
-                <div class="remember-me-parent">
-                    <input class="checkbox" type="checkbox">
-                    <p class="remember-me">Remember Me</p>
-                </div>
+                    <div class="remember-me-parent">
+                        <input class="checkbox" type="checkbox" name="rememberMe">
+                        <p class="remember-me">Remember Me</p>
+                    </div>
 
-                <div class="btn-forgot-password">
-                    <button class="sign-in-btn">Sign In</button>
-                    
+                    <div class="btn-forgot-password">
+                        <button class="sign-in-btn" type="submit">Log In</button>
 
-                    <p class="forgot-password"><a class="forgot-password" href="https://www.youtube.com">Forgot your Password?</a></p>
 
-                </div>
+                        <p class="forgot-password"><a class="forgot-password" href="#">Forgot your Password?</a></p>
+
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    
+    <script src="login.js"></script>
 </body>
 </html>

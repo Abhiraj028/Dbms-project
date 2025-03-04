@@ -3,56 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="style-signup.css">
 </head>
 <body>
     <div class="cover">
         <div class="Lside">
             <p class="Lside-picture">
-                <img src="../../images/the-north-face.png" >
+                <img src="../../images/the-north-face.png" alt="The North Face Logo">
             </p>
             <p class="Lside-desc">
-                Achieve it. 
+                Achieve it.
             </p>
         </div>
         <div class="Rside">
             <p class="Rside-title">
-                Sign in
+                Sign Up
             </p>
             <div class="Rside-under">
-                <p class="username-heading sign-up-heading">UserName</p>
-                <input class="username-input input" type="text">
-                
-                <p class="email-heading sign-up-heading">Email Address</p>
-                <input class="email-text input" type="text">
+                <form id="signupForm">
+                    <p class="username-heading sign-up-heading">UserName</p>
+                    <input class="username-input input" type="text" name="username" required>
 
-                <p class="password-heading sign-up-heading">Password</p>
-                <input class="password-text input" type="password">
+                    <p class="email-heading sign-up-heading">Email Address</p>
+                    <input class="email-text input" type="email" name="email" required>
 
-                <p class="password-heading sign-up-heading">Confirm Password</p>
-                <input class="password-text input" type="password">
+                    <p class="password-heading sign-up-heading">Password</p>
+                    <input class="password-text input" type="password" name="password" required>
 
-                <div class="remember-me-parent">
-                    <input class="checkbox" type="checkbox">
-                    <p class="remember-me">Remember Me</p>
-                </div>
+                    <p class="password-heading sign-up-heading">Confirm Password</p>
+                    <input class="password-text input" type="password" name="confirmPassword" required>
 
-                <div class="btn-forgot-password">
-                    <button class="sign-in-btn">Sign In</button>
-                    
+                    <div class="remember-me-parent">
+                        <input class="checkbox" type="checkbox" name="rememberMe">
+                        <p class="remember-me">Remember Me</p>
+                    </div>
 
-                    <p class="forgot-password"><a class="forgot-password" href="https://www.youtube.com">Forgot your Password?</a></p>
+                    <div class="btn-forgot-password">
+                        <button class="sign-in-btn" type="submit">Sign Up</button>
 
-                </div>
 
-                <div class="account-prompt">
-                    Already have an account? <a href="login.html">Log In</a>
-                </div>
-                
+                        <p class="forgot-password"><a class="forgot-password" href="#">Forgot your Password?</a></p>
+
+                    </div>
+
+                    <div class="account-prompt">
+                        Already have an account? <a href="login.html">Log In</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    
+    <script src="signup.js"></script>
 </body>
 </html>
