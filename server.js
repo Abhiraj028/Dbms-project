@@ -1,106 +1,114 @@
 const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
+const path = require('path');
+
 const app = express();
 const port = 3000;
 
+// Serve static files from the 'code' directory
+app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.static(path.join(__dirname, 'code')));
+
+
+// Middleware to parse JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Serve signup and login pages
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'code', 'signup', 'signup.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'code', 'signup', 'login.html'));
+});
+
+// MySQL Database Connection
 const db = mysql.createConnection({
     host: 'localhost',
-    user: 'Abhiraj', // Or your MySQL username
-    password: 'Qwerty@bh1', // Your MySQL password
-    database: 'north_face_users',
+    user: 'Abhiraj',
+    password: 'Qwerty@bh1',
+    database: 'north_face_users'
 });
 
-
+// Connect to the database
 db.connect((err) => {
     if (err) {
-        throw err;
+        console.error('Database connection failed:', err);
+        return;
     }
-    console.log('Connected to MySQL');
+    console.log('Connected to MySQL Database');
 });
 
-// Signup Route (Modified for error popup, account exists check)
+// Signup route
 app.post('/signup', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
 
-    // --- Server-Side Password Confirmation ---
     if (password !== confirmPassword) {
         return res.status(400).json({ message: "Passwords do not match" });
     }
 
     try {
-        // Check if the email already exists
-        const emailCheckSql = 'SELECT * FROM users WHERE email = ?';
-        db.query(emailCheckSql, [email], async (emailCheckErr, emailCheckResults) => {
-            if (emailCheckErr) {
-                console.error(emailCheckErr);
-                return res.status(500).json({ message: 'Database error checking email' }); // Send JSON for AJAX
+        db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ message: 'Database error' });
+            }
+            if (results.length > 0) {
+                return res.status(400).json({ message: 'Email already exists' });
             }
 
-            if (emailCheckResults.length > 0) {
-                return res.status(400).json({ message: 'Email already exists' }); // Send JSON for AJAX
-            }
-
-            // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insert the user into the database
-            const sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-            db.query(sql, [username, email, hashedPassword], (err, result) => {
-                if (err) {
-                    console.error(err);
-                    return res.status(500).json({ message: 'Error registering user' }); // Send JSON for AJAX
+            db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', 
+            [username, email, hashedPassword], (insertErr) => {
+                if (insertErr) {
+                    console.error(insertErr);
+                    return res.status(500).json({ message: 'Error registering user' });
                 }
-                console.log('User registered successfully');
-                res.status(200).json({ message: 'User registered successfully' }); // Send JSON for AJAX
+                res.status(200).json({ message: 'User registered successfully' });
             });
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error hashing password' }); // Send JSON for AJAX
+        res.status(500).json({ message: 'Error processing request' });
     }
 });
 
-// Login Route (Modified for admin/customer redirect)
+// Login route
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    const sql = 'SELECT id, username, password, isAdmin FROM users WHERE email = ?';
-    db.query(sql, [email], async (err, results) => {
+    db.query('SELECT id, username, password, isAdmin FROM users WHERE email = ?', [email], async (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).json({ message: 'Error during login' }); // Send JSON for AJAX
+            return res.status(500).json({ message: 'Database error' });
         }
-
         if (results.length === 0) {
-            return res.status(400).json({ message: 'Invalid credentials' }); // Send JSON for AJAX
+            return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         const user = results[0];
+
         try {
-            // Compare the password
             const passwordMatch = await bcrypt.compare(password, user.password);
 
             if (passwordMatch) {
-                console.log('Login successful');
-                if (user.isAdmin) {
-                    return res.status(200).json({ message: 'Admin login successful', redirect: '/admin' }); // Send JSON for AJAX
-                } else {
-                    return res.status(200).json({ message: 'Customer login successful', redirect: '/customer' }); // Send JSON for AJAX
-                }
+                return res.status(200).json({
+                    message: user.isAdmin ? 'Admin login successful' : 'Customer login successful',
+                    redirect: user.isAdmin ? '/admin' : '/customer'
+                });
             } else {
-                res.status(400).json({ message: 'Invalid credentials' }); // Send JSON for AJAX
+                return res.status(400).json({ message: 'Invalid credentials' });
             }
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Error comparing passwords' }); // Send JSON for AJAX
+            res.status(500).json({ message: 'Error during login' });
         }
     });
 });
 
 app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server running at: http://localhost:${port}`);
 });
