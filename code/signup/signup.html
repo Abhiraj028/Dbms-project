@@ -17,22 +17,20 @@
             </p>
         </div>
         <div class="Rside">
-            <p class="Rside-title">
-                Sign Up
-            </p>
+            <div class="Rside-title">Sign Up</div>
             <div class="Rside-under">
                 <form id="signupForm">
-                    <p class="username-heading sign-up-heading">UserName</p>
-                    <input class="username-input input" type="text" name="username" required>
-
-                    <p class="email-heading sign-up-heading">Email Address</p>
-                    <input class="email-text input" type="email" name="email" required>
-
-                    <p class="password-heading sign-up-heading">Password</p>
-                    <input class="password-text input" type="password" name="password" required>
-
-                    <p class="password-heading sign-up-heading">Confirm Password</p>
-                    <input class="password-text input" type="password" name="confirmPassword" required>
+                    <label class="Rside-under">Username</label>
+                    <input type="text" class="input" id="username" placeholder="Enter your username" required>
+                    
+                    <label class="Rside-under">Email</label>
+                    <input type="email" class="input" id="email" placeholder="Enter your email" required>
+                    
+                    <label class="Rside-under">Password</label>
+                    <input type="password" class="input" id="password" placeholder="Enter your password" required>
+                    
+                    <label class="Rside-under">Confirm Password</label>
+                    <input type="password" class="input" id="confirmPassword" placeholder="Confirm your password" required>
 
                     <div class="remember-me-parent">
                         <input class="checkbox" type="checkbox" name="rememberMe">
@@ -41,10 +39,7 @@
 
                     <div class="btn-forgot-password">
                         <button class="sign-in-btn" type="submit">Sign Up</button>
-
-
                         <p class="forgot-password"><a class="forgot-password" href="#">Forgot your Password?</a></p>
-
                     </div>
 
                     <div class="account-prompt">

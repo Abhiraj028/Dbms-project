@@ -89,13 +89,6 @@ body {
     margin: 16px 0;
 }
 
-/* .remember-me-parent input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #4ecdc4;
-} */
-
-
 .btn-forgot-password {
     display: flex;
     justify-content: space-between;
@@ -135,5 +128,19 @@ body {
     text-decoration: none;
     font-weight: 500;
     margin-left: 10px;
+}
+
+.name-row {
+    display: flex;
+    gap: 10px;
+    width: 18.23vw;
+}
+
+.name-field {
+    flex: 1;
+}
+
+.name-input {
+    width: 100%;
 }
 

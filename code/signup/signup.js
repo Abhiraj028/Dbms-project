@@ -1,8 +1,12 @@
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const formDataObject = Object.fromEntries(formData.entries());
+    const formData = {
+        username: document.getElementById('username').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        confirmPassword: document.getElementById('confirmPassword').value
+    };
 
     try {
         const response = await fetch('/signup', {
@@ -10,18 +14,19 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formDataObject)
+            body: JSON.stringify(formData)
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            alert(data.message); // Success popup
+            alert('Registration successful!');
+            window.location.href = '/login';
         } else {
-            alert(data.message); // Error popup
+            alert(data.message || 'Error during registration');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An unexpected error occurred.');
+        alert('Error during registration');
     }
 });
