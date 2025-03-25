@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Shopping Cart</h1>
+        <a href="/user/user.html">Shop</a>
+        <a href="/orders/orders.html">Orders</a>
+    </nav>
+
+    <div class="cart-container">
+        <!-- Cart Items Section -->
+        <section class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically loaded here -->
+        </section>
+
+        <!-- Cart Summary Section -->
+        <aside class="cart-summary">
+            <h2>Order Summary</h2>
+            <p>Total: <span id="totalPrice">0</span> INR</p>
+            <input type="text" id="phone" placeholder="Enter phone number">
+            <input type="text" id="address" placeholder="Enter address">
+            <button id="checkoutButton">Checkout</button>
+        </aside>
+    </div>
+
+    <!-- Link to JavaScript File -->
+    <script src="cart.js"></script>
+</body>
+</html>

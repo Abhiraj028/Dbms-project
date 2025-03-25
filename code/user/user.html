@@ -3,81 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The North Face - Shop</title>
+    <title>Shop</title>
     <link rel="stylesheet" href="user.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Simple Navigation Bar -->
     <nav class="navbar">
-        <div class="nav-left">
-            <img src="/images/the-north-face.png" alt="The North Face Logo" class="logo">
+        <div class="logo">
+            <h1>The North Face Store</h1>
         </div>
-        <div class="nav-right">
-            <div class="search-bar">
-                <input type="text" placeholder="Search products...">
-                <button><i class="fas fa-search"></i></button>
-            </div>
-            <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart</a>
-            <a href="#" class="nav-link"><i class="fas fa-user"></i> Account</a>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search products...">
+            <button type="submit"></button>
         </div>
+        
+        <ul class="nav-links">
+            <li><a href="../cart/cart.html"> Cart</a></li>
+            <li><a href="userOrders.html"> Orders</a></li>
+            <li><a href="../admin/admin.html"> Admin</a></li>
+        </ul>
     </nav>
-
-    <div class="main-container">
-        <!-- Simplified Filter Sidebar -->
-        <aside class="filters">
-            <h3>Filters</h3>
+    
+    
+    <div class="container">
+        <aside class="sidebar">
+            <div class="filters-div">
+                <h2>Filters</h2>
+                <label><input type="checkbox" class="filter-category" value="jackets"> Jackets</label>
+                <label><input type="checkbox" class="filter-category" value="fleece"> Fleece</label>
+                <label><input type="checkbox" class="filter-category" value="tshirts"> T-Shirts</label>
+                <label><input type="checkbox" class="filter-category" value="backpacks"> Backpacks</label>
+            </div>
             
-            <div class="filter-section">
-                <h4>Categories</h4>
-                <div class="filter-options">
-                    <label><input type="checkbox" name="category" value="jackets"> Jackets</label>
-                    <label><input type="checkbox" name="category" value="fleece"> Fleece</label>
-                    <label><input type="checkbox" name="category" value="shirts"> T-Shirts</label>
-                    <label><input type="checkbox" name="category" value="backpacks"> Backpacks</label>
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <h4>Price Range</h4>
-                <div class="price-inputs">
-                    <input type="number" placeholder="Min" min="0">
-                    <span>to</span>
-                    <input type="number" placeholder="Max" min="0">
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <h4>Size</h4>
-                <div class="size-options">
-                    <button class="size-btn">S</button>
-                    <button class="size-btn">M</button>
-                    <button class="size-btn">L</button>
-                    <button class="size-btn">XL</button>
-                </div>
-            </div>
-
-            <button class="clear-filters">Clear All</button>
+            
+            <h3>Price Range</h3>
+            <input type="range" id="priceSlider" min="2000" max="20000" step="500">
+            <p>Max Price: <span id="priceValue">20000</span> INR</p>
         </aside>
-
-        <!-- Main Content -->
-        <main class="products-section">
-            <div class="products-header">
-                <h2>All Products</h2>
-                <select id="sort-select">
-                    <option value="featured">Featured</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="top-rated">Top Rated</option>
-                </select>
-            </div>
-
-            <div class="products-grid">
-                <!-- Product cards will be dynamically inserted here -->
-            </div>
-        </main>
+        
+        <section class="product-grid" id="productGrid">
+            <!-- Products will be loaded here dynamically -->
+        </section>
     </div>
-
+    
     <script src="user.js"></script>
 </body>
-</html> 
+</html>

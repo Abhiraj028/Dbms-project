@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
-    <link rel="stylesheet" type="text/css" href="/signup/style-login.css">
+    <link rel="stylesheet" type="text/css" href="style-login.css">
 
 
 </head>
@@ -17,6 +17,7 @@
             <p class="center-title">Log In</p>
 
             <div class="center-under">
+
                 <form id="loginForm">
                     <p class="email-heading login-heading">Email Address</p>
                     <input class="email-text input" type="email" name="email" required>
@@ -31,15 +32,15 @@
 
                     <div class="btn-forgot-password">
                         <button class="sign-in-btn" type="submit">Log In</button>
-
-
-                        <p class="forgot-password"><a class="forgot-password" href="#">Forgot your Password?</a></p>
-
+                        <div class="account-prompt">
+                            Don't have an account? <a href="/signup">Sign up</a>
+                        </div>
                     </div>
                 </form>
+                
             </div>
         </div>
     </div>
-    <script src="/signup/login.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>
