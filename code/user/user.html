@@ -20,7 +20,8 @@
         <ul class="nav-links">
             <li><a href="../cart/cart.html"> Cart</a></li>
             <li><a href="userOrders.html"> Orders</a></li>
-            <li><a href="../admin/admin.html"> Admin</a></li>
+            <li><a href="../admin/admin.html" id="adminLink"> Admin</a></li>
+
         </ul>
     </nav>
     
@@ -47,5 +48,23 @@
     </div>
     
     <script src="user.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const adminLink = document.getElementById("adminLink"); // Ensure the admin link has this ID
+        
+            if (adminLink) {
+                adminLink.addEventListener("click", (event) => {
+                    const isAdmin = localStorage.getItem("is_admin");
+        
+                    if (isAdmin !== "1") { // Not an admin
+                        event.preventDefault(); // Stop navigation
+                        alert("❌ Access Denied: You are not an admin!");
+                    }
+                });
+            }
+        });
+        </script>
+        
 </body>
 </html>

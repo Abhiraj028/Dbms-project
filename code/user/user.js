@@ -6,34 +6,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let products = [];
 
-    // ✅ URL Extractor Function
+    // ✅ Extract user_id from URL or localStorage
     function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const value = urlParams.get(param);
-        console.log(`Extracted query param '${param}':`, value); // Debug log
-        return value;
+        return new URLSearchParams(window.location.search).get(param);
     }
 
-    // ✅ Extract user_id from URL or localStorage
     const user_id = (() => {
         const storedUserId = localStorage.getItem("user_id");
         const urlUserId = getQueryParam("user_id");
 
         if (urlUserId) {
-            localStorage.setItem("user_id", urlUserId); // Store user_id from URL for future use
+            localStorage.setItem("user_id", urlUserId);
             return urlUserId;
         }
 
-        return storedUserId; // Fallback to stored user ID if no user ID in URL
+        return storedUserId;
     })();
 
     if (!user_id) {
-        console.warn("⚠ No user ID found in localStorage or URL.");
-    } else {
-        console.log("✅ User ID:", user_id);
+        alert("⚠ Please log in to view products.");
+        window.location.href = "/login.html"; // Redirect if not logged in
+        return;
     }
 
-    // Fetch products from the server
+    console.log("✅ User ID:", user_id);
+
     async function fetchProducts() {
         try {
             const response = await fetch("http://localhost:3000/products");
@@ -45,9 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Render products in the grid
     function renderProducts(filteredProducts) {
-        productGrid.innerHTML = ""; // Clear previous content
+        productGrid.innerHTML = "";
 
         filteredProducts.forEach(product => {
             const productCard = document.createElement("div");
@@ -70,7 +66,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         attachEventListeners();
     }
 
-    // Get image name based on category and product ID
     function getImageName(category, id) {
         const categoryPrefix = {
             "jackets": "Jacket",
@@ -81,7 +76,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return `${categoryPrefix[category] || "Default"}0${id % 4 + 1}.avif`;
     }
 
-    // Attach event listeners to buttons
     function attachEventListeners() {
         document.querySelectorAll(".increase").forEach(button => {
             button.addEventListener("click", function () {
@@ -104,11 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         document.querySelectorAll(".add-to-cart").forEach(button => {
             button.addEventListener("click", async function () {
-                if (!user_id) {
-                    alert("⚠ Please log in to add items to your cart.");
-                    return;
-                }
-
                 const product_id = this.dataset.id;
                 const qtyElement = document.getElementById(`qty-${product_id}`);
                 const quantity = parseInt(qtyElement.textContent);
@@ -134,7 +123,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // Filter products based on category & price
     function filterProducts() {
         const selectedCategories = Array.from(filters)
             .filter(checkbox => checkbox.checked)
@@ -150,13 +138,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderProducts(filteredProducts);
     }
 
-    // Event listeners for filters
     filters.forEach(filter => filter.addEventListener("change", filterProducts));
     priceSlider.addEventListener("input", () => {
         priceValue.textContent = priceSlider.value;
         filterProducts();
     });
 
-    // Initial product fetch
     fetchProducts();
 });

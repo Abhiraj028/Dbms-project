@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!user_id) {
         alert("⚠ Please log in to view your orders.");
+        window.location.href = "/login.html"; // Redirect to login if not logged in
         return;
     }
 

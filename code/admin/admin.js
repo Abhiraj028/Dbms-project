@@ -2,6 +2,9 @@ const BASE_URL = "http://localhost:3000";
 const productList = document.getElementById("product-list");
 const orderList = document.getElementById("order-list"); // Order section still referenced
 
+
+
+
 // ✅ Function to get image name based on category and product ID
 function getImageName(category, id) {
     const categoryPrefix = {

@@ -59,6 +59,36 @@ body {
     padding-left: 15px;
 }
 
+/* Quantity Controls (New) */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.decrease-btn,
+.remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.decrease-btn:hover {
+    background-color: #c82333;
+}
+
+.remove-btn {
+    background-color: #6c757d;
+}
+
+.remove-btn:hover {
+    background-color: #5a6268;
+}
+
 .summary-box {
     flex: 1;
     background: white;

@@ -82,7 +82,7 @@ app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
     // 🔍 Fetch user details where email matches
-    db.query("SELECT id, password FROM users WHERE email = ?", [email], async (err, results) => {
+    db.query("SELECT id, password, is_admin FROM users WHERE email = ?", [email], async (err, results) => {
         if (err) {
             console.error("❌ Database query error:", err);
             return res.status(500).json({ message: "Internal server error" });
@@ -101,12 +101,18 @@ app.post("/login", (req, res) => {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        console.log("✅ Login successful. User ID:", user.id);
+        console.log("✅ Login successful. User ID:", user.id, "Is Admin:", user.is_admin);
 
-        // 🛠 Send the user_id in response
-        res.json({ message: "Login successful", user_id: user.id, redirect: `/user?user_id=${user.id}` });
+        // 🛠 Send the user_id and is_admin in response
+        res.json({
+            message: "Login successful",
+            user_id: user.id,
+            is_admin: user.is_admin,  // ✅ Added this
+            redirect: user.is_admin ? `/admin?user_id=${user.id}` : `/user?user_id=${user.id}`
+        });
     });
 });
+
 
 
 // **Product Routes**
@@ -233,6 +239,33 @@ app.delete("/cart/:id", (req, res) => {
     });
 });
 
+app.put('/cart/decrease/:sno', async (req, res) => {
+    try {
+        const { sno } = req.params;
+
+        // Fetch the current quantity of the item
+        const [cartItem] = await db.promise().query("SELECT quantity FROM cart WHERE sno = ?", [sno]);
+
+        if (!cartItem.length) return res.status(404).json({ error: "Item not found" });
+
+        if (cartItem[0].quantity > 1) {
+            // If quantity > 1, just decrease it
+            await db.promise().query("UPDATE cart SET quantity = quantity - 1 WHERE sno = ?", [sno]);
+            res.json({ message: "Quantity decreased", newQuantity: cartItem[0].quantity - 1 });
+        } else {
+            // If quantity is 1, remove the item from the cart
+            await db.promise().query("DELETE FROM cart WHERE sno = ?", [sno]);
+            res.json({ message: "Item removed from cart" });
+        }
+
+    } catch (error) {
+        console.error("❌ Error decreasing quantity:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+
 
 app.post("/checkout", (req, res) => {
     const { user_id, phone, address } = req.body;
@@ -247,14 +280,14 @@ app.post("/checkout", (req, res) => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const order_no = `ORD${timestamp}-${randomDigits}`;
 
-    // Fetch username, cart items, and total amount
+    // Fetch cart items
     const getCartQuery = `
-        SELECT u.username, c.product_id, c.quantity, p.mrp, SUM(p.mrp * c.quantity) AS total_amount
+        SELECT u.username, c.product_id, c.quantity, p.mrp, p.stock_quantity
         FROM users u
         JOIN cart c ON u.id = c.user_id
         JOIN products p ON c.product_id = p.product_id
         WHERE u.id = ?
-        GROUP BY u.username, c.product_id, c.quantity, p.mrp`;
+        GROUP BY u.username, c.product_id,p.mrp,p.stock_quantity`;
 
     db.query(getCartQuery, [user_id], (err, results) => {
         if (err || results.length === 0) {
@@ -267,45 +300,75 @@ app.post("/checkout", (req, res) => {
         const cartItems = results.map(item => ({
             product_id: item.product_id,
             quantity: item.quantity,
-            mrp: item.mrp
+            mrp: item.mrp,
+            stock_quantity: item.stock_quantity
         }));
 
-        // Insert into orders
-        db.query(
-            `INSERT INTO orders (order_no, user_id, username, phone, address, amount) 
-             VALUES (?, ?, ?, ?, ?, ?)`,
-            [order_no, user_id, username, phone, address, total_amount || 0],
-            (orderErr) => {
-                if (orderErr) {
-                    console.error("❌ Checkout failed:", orderErr);
-                    return res.status(500).json({ error: "Checkout failed" });
-                }
+        // Check stock availability
+        const outOfStockItems = cartItems.filter(item => item.quantity > item.stock_quantity);
+        if (outOfStockItems.length > 0) {
+            return res.status(400).json({ error: "Some items are out of stock", outOfStockItems });
+        }
 
-                // Insert items into order_items
-                const insertOrderItemsQuery = `INSERT INTO order_items (order_no, product_id, quantity, mrp) VALUES ?`;
-                const orderItemsValues = cartItems.map(item => [order_no, item.product_id, item.quantity, item.mrp]);
+        // Update stock in products table
+        const updateStockQuery = `
+            UPDATE products
+            SET stock_quantity = stock_quantity - ?
+            WHERE product_id = ?`;
 
-                db.query(insertOrderItemsQuery, [orderItemsValues], (orderItemsErr) => {
-                    if (orderItemsErr) {
-                        console.error("❌ Failed to insert order items:", orderItemsErr);
-                        return res.status(500).json({ error: "Failed to save order items" });
-                    }
+        const updateStockPromises = cartItems.map(item => 
+            new Promise((resolve, reject) => {
+                db.query(updateStockQuery, [item.quantity, item.product_id], (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            })
+        );
 
-                    // Clear cart after successful order
-                    db.query("DELETE FROM cart WHERE user_id = ?", [user_id], (deleteErr) => {
-                        if (deleteErr) {
-                            console.error("❌ Failed to clear cart after checkout:", deleteErr);
-                            return res.status(500).json({ error: "Failed to clear cart" });
+        Promise.all(updateStockPromises)
+            .then(() => {
+                // Insert into orders table
+                db.query(
+                    `INSERT INTO orders (order_no, user_id, username, phone, address, amount) 
+                     VALUES (?, ?, ?, ?, ?, ?)`,
+                    [order_no, user_id, username, phone, address, total_amount || 0],
+                    (orderErr) => {
+                        if (orderErr) {
+                            console.error("❌ Checkout failed:", orderErr);
+                            return res.status(500).json({ error: "Checkout failed" });
                         }
 
-                        console.log(`✅ Order placed: ${order_no} for user ${user_id}`);
-                        res.json({ message: "Order placed successfully", order_no });
-                    });
-                });
-            }
-        );
+                        // Insert items into order_items
+                        const insertOrderItemsQuery = `INSERT INTO order_items (order_no, product_id, quantity, mrp) VALUES ?`;
+                        const orderItemsValues = cartItems.map(item => [order_no, item.product_id, item.quantity, item.mrp]);
+
+                        db.query(insertOrderItemsQuery, [orderItemsValues], (orderItemsErr) => {
+                            if (orderItemsErr) {
+                                console.error("❌ Failed to insert order items:", orderItemsErr);
+                                return res.status(500).json({ error: "Failed to save order items" });
+                            }
+
+                            // Clear cart after successful order
+                            db.query("DELETE FROM cart WHERE user_id = ?", [user_id], (deleteErr) => {
+                                if (deleteErr) {
+                                    console.error("❌ Failed to clear cart after checkout:", deleteErr);
+                                    return res.status(500).json({ error: "Failed to clear cart" });
+                                }
+
+                                console.log(`✅ Order placed: ${order_no} for user ${user_id}`);
+                                res.json({ message: "Order placed successfully", order_no });
+                            });
+                        });
+                    }
+                );
+            })
+            .catch(stockUpdateErr => {
+                console.error("❌ Stock update failed:", stockUpdateErr);
+                res.status(500).json({ error: "Stock update failed" });
+            });
     });
 });
+
 
 app.get("/admin/products", (req, res) => {
     const query = `
@@ -315,16 +378,22 @@ app.get("/admin/products", (req, res) => {
             p.mrp, 
             p.category, 
             p.stock_quantity,
-            COALESCE(SUM(c.quantity), 0) AS in_cart, 
-            COALESCE(SUM(oi.quantity), 0) AS sold_quantity
-        FROM 
-            products p
-        LEFT JOIN 
-            cart c ON p.product_id = c.product_id
-        LEFT JOIN 
-            order_items oi ON p.product_id = oi.product_id
-        GROUP BY 
-            p.product_id, p.name, p.mrp, p.category, p.stock_quantity
+
+            -- Ensure in_cart is never NULL
+            CASE 
+                WHEN (SELECT SUM(c.quantity) FROM cart c WHERE c.product_id = p.product_id) IS NULL 
+                THEN 0 
+                ELSE (SELECT SUM(c.quantity) FROM cart c WHERE c.product_id = p.product_id) 
+            END AS in_cart,
+
+            -- Ensure sold_quantity is never NULL
+            CASE 
+                WHEN (SELECT SUM(oi.quantity) FROM order_items oi WHERE oi.product_id = p.product_id) IS NULL 
+                THEN 0 
+                ELSE (SELECT SUM(oi.quantity) FROM order_items oi WHERE oi.product_id = p.product_id) 
+            END AS sold_quantity
+        
+        FROM products p
     `;
 
     db.query(query, (err, results) => {
@@ -332,10 +401,10 @@ app.get("/admin/products", (req, res) => {
             console.error("❌ Error fetching products for admin:", err);
             return res.status(500).json({ error: "Database error" });
         }
+        
         res.json(results);
     });
 });
-
 
 app.get("/admin/orders", (req, res) => {
     db.query("SELECT * FROM orders ORDER BY order_no DESC", (err, results) => {

@@ -25,9 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("🔍 Login Response:", result);
 
             if (response.ok && result.user_id) {
-                console.log(`✅ Redirecting to /user.html?user_id=${result.user_id}`);
-                window.location.href = result.redirect;
-            } else {
+                localStorage.setItem("user_id", result.user_id);
+                localStorage.setItem("is_admin", result.is_admin); // Store is_admin flag
+                console.log(`✅ Redirecting to /user.html`);
+                window.location.href = "/user"; // Always go to user page first
+            }
+             else {
                 console.error("❌ user_id is missing in response");
                 alert(result.message);
             }
