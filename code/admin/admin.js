@@ -1,11 +1,11 @@
 const BASE_URL = "http://localhost:3000";
 const productList = document.getElementById("product-list");
-const orderList = document.getElementById("order-list"); // Order section still referenced
+const orderList = document.getElementById("order-list"); 
 
 
 
 
-// ✅ Function to get image name based on category and product ID
+//  image name 
 function getImageName(category, id) {
     const categoryPrefix = {
         "jackets": "Jacket",
@@ -16,7 +16,7 @@ function getImageName(category, id) {
     return `${categoryPrefix[category] || "Default"}0${id % 4 + 1}.avif`;
 }
 
-// ✅ Fetch and display products
+//  main fucntion
 async function fetchProducts() {
     try {
         const response = await fetch(`${BASE_URL}/admin/products`);
@@ -40,39 +40,13 @@ async function fetchProducts() {
             productList.appendChild(productCard);
         });
     } catch (error) {
-        console.error("❌ Error fetching products:", error.message);
+        console.error(" Error fetching products:", error.message);
     }
 }
 
-// ✅ Fetch and display orders (only if orderList exists)
-async function fetchOrders() {
-    if (!orderList) return; // No order section in admin.html, so skip this
 
-    try {
-        const response = await fetch(`${BASE_URL}/admin/orders`);
-        if (!response.ok) throw new Error(`Server Error: ${response.status}`);
 
-        const orders = await response.json();
-        orderList.innerHTML = "";
-
-        orders.forEach(order => {
-            const orderCard = document.createElement("div");
-            orderCard.classList.add("order-card");
-            orderCard.innerHTML = `
-                <h3>Order No: ${order.order_no}</h3>
-                <p>User: ${order.username}</p>
-                <p>Phone: ${order.phone}</p>
-                <p>Address: ${order.address}</p>
-                <p>Total Amount: ₹${order.amount}</p>
-            `;
-            orderList.appendChild(orderCard);
-        });
-    } catch (error) {
-        console.error("❌ Error fetching orders:", error.message);
-    }
-}
-
-// ✅ Update stock functionality
+//  Update stock 
 productList.addEventListener("click", async (event) => {
     if (event.target.classList.contains("update-stock")) {
         const productId = event.target.dataset.id;
@@ -89,14 +63,14 @@ productList.addEventListener("click", async (event) => {
 
             if (!response.ok) throw new Error("Failed to update stock");
 
-            alert("✅ Stock updated successfully!");
+            alert(" Stock updated successfully!");
             fetchProducts(); // Refresh the product list
         } catch (error) {
-            console.error("❌ Error updating stock:", error.message);
+            console.error(" Error updating stock:", error.message);
         }
     }
 });
 
-// ✅ Initial fetch
+
 fetchProducts();
-fetchOrders(); // Only runs if order section exists
+ 

@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             let total = 0;
 
             if (cartItems.length === 0) {
-                cartContainer.innerHTML = "<p>Your cart is empty 🛒</p>";
+                cartContainer.innerHTML = "<p>Your cart is empty</p>";
                 totalAmount.textContent = "₹0";
                 return;
             }
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             totalAmount.textContent = `₹${total}`;
         } catch (error) {
-            console.error("❌ Error fetching cart:", error);
+            console.error(" Error fetching cart:", error);
             cartContainer.innerHTML = "<p>⚠ Failed to load cart items. Please try again later.</p>";
         }
     }
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             fetchCartItems(); // Refresh cart after quantity decrease
         } catch (error) {
-            console.error("❌ Error decreasing quantity:", error);
+            console.error(" Error decreasing quantity:", error);
             alert("Failed to decrease quantity. Please try again.");
         }
     }
@@ -82,14 +82,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!confirm("Are you sure you want to remove this item?")) return;
 
             try {
-                console.log("🗑 Removing item with sno:", sno);
+                console.log(" Removing item with sno:", sno);
 
                 const response = await fetch(`${BASE_URL}/cart/${sno}`, { method: "DELETE" });
                 if (!response.ok) throw new Error("Failed to remove item");
 
                 fetchCartItems(); // Refresh cart after removal
             } catch (error) {
-                console.error("❌ Error removing item:", error);
+                console.error(" Error removing item:", error);
                 alert("Failed to remove item. Please try again.");
             }
         } else if (event.target.classList.contains("decrease-btn")) {
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const address = addressInput.value.trim();
     
         if (!phone || !address) {
-            alert("⚠ Please enter both phone number and address.");
+            alert(" Please enter both phone number and address.");
             return;
         }
     
@@ -118,15 +118,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     
             if (!response.ok) throw new Error("Failed to place order");
     
-            alert("✅ Order placed successfully!");
+            alert(" Order placed successfully!");
     
-            // **Clear the phone and address fields after successful order**
+            
             phoneInput.value = "";
             addressInput.value = "";
     
             fetchCartItems(); // Refresh cart after successful checkout
         } catch (error) {
-            console.error("❌ Error during checkout:", error);
+            console.error(" Error during checkout:", error);
             alert("Failed to place order. Please try again.");
         }
     });

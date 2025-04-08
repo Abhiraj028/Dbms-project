@@ -11,11 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve Static Files Properly
+//  Serve Static Files Properly
 app.use(express.static(path.join(__dirname, "code"))); 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// ✅ Serve Static Files for Each Page (CSS, JS, etc.)
+//  Serve Static Files for Each Page (CSS, JS, etc.)
 app.use('/user', express.static(path.join(__dirname, "code", "user")));
 app.use('/cart', express.static(path.join(__dirname, "code", "cart")));
 app.use('/orders', express.static(path.join(__dirname, "code", "orders")));
@@ -23,7 +23,7 @@ app.use('/admin', express.static(path.join(__dirname, "code", "admin")));
 app.use('/login', express.static(path.join(__dirname, "code", "login")));
 app.use('/signup', express.static(path.join(__dirname, "code", "signup")));
 
-// ✅ Database Connection
+//  Database Connection
 const db = mysql.createConnection({
     host: "localhost",
     user: "Abhiraj",
@@ -33,10 +33,10 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error("❌ Database connection failed:", err);
+        console.error(" Database connection failed:", err);
         return;
     }
-    console.log("✅ Connected to MySQL Database");
+    console.log(" Connected to MySQL Database");
 });
 
 app.get("/user", (req, res) => {
@@ -81,33 +81,33 @@ app.post("/signup", async (req, res) => {
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
-    // 🔍 Fetch user details where email matches
+    //  Fetch user details where email matches
     db.query("SELECT id, password, is_admin FROM users WHERE email = ?", [email], async (err, results) => {
         if (err) {
-            console.error("❌ Database query error:", err);
+            console.error(" Database query error:", err);
             return res.status(500).json({ message: "Internal server error" });
         }
 
-        // 🔥 Check if user exists
+        //  Check if user exists
         if (results.length === 0) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
         const user = results[0];
 
-        // 🔥 Verify password
+        //  Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Invalid email or password" });
         }
 
-        console.log("✅ Login successful. User ID:", user.id, "Is Admin:", user.is_admin);
+        console.log(" Login successful. User ID:", user.id, "Is Admin:", user.is_admin);
 
         // 🛠 Send the user_id and is_admin in response
         res.json({
             message: "Login successful",
             user_id: user.id,
-            is_admin: user.is_admin,  // ✅ Added this
+            is_admin: user.is_admin,  //  Added this
             redirect: user.is_admin ? `/admin?user_id=${user.id}` : `/user?user_id=${user.id}`
         });
     });
@@ -126,7 +126,7 @@ app.get("/products", (req, res) => {
 // **Cart Routes**
 app.get("/cart/:user_id", (req, res) => {
     const userId = req.params.user_id;
-    console.log(`🔍 Fetching cart items for user_id: ${userId}`); // Debug log
+    console.log(` Fetching cart items for user_id: ${userId}`); // Debug log
 
     const query = `
         SELECT 
@@ -145,13 +145,13 @@ app.get("/cart/:user_id", (req, res) => {
 
     db.query(query, [userId], (err, results) => {
         if (err) {
-            console.error("❌ Database error:", err);
+            console.error(" Database error:", err);
             return res.status(500).json({ error: "Database error" });
         }
         
         console.log(`🛒 Cart items found for user ${userId}:`, results.length);
 
-        // ✅ Return an empty array instead of a 404 error
+        //  Return an empty array instead of a 404 error
         res.json(results.length > 0 ? results : []);
     });
 });
@@ -161,34 +161,34 @@ app.post("/add-to-cart", (req, res) => {
     const { user_id, product_id, quantity } = req.body;
 
     if (!user_id || !product_id || !quantity) {
-        console.log("❌ Missing required fields:", req.body);
+        console.log(" Missing required fields:", req.body);
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    console.log(`🔍 Checking stock for product ${product_id}`);
+    console.log(` Checking stock for product ${product_id}`);
 
     db.query("SELECT stock_quantity FROM products WHERE product_id = ?", [product_id], (err, results) => {
         if (err) {
-            console.error("❌ Database error in stock check:", err);
+            console.error(" Database error in stock check:", err);
             return res.status(500).json({ error: "Database error" });
         }
 
         if (results.length === 0) {
-            console.log("❌ Product not found:", product_id);
+            console.log(" Product not found:", product_id);
             return res.status(404).json({ error: "Product not found" });
         }
 
         const availableStock = results[0].stock_quantity;
         if (quantity > availableStock) {
-            console.log("❌ Not enough stock:", { available: availableStock, requested: quantity });
+            console.log(" Not enough stock:", { available: availableStock, requested: quantity });
             return res.status(400).json({ error: "Not enough stock available" });
         }
 
-        console.log(`✅ Stock is available for ${product_id}, checking cart`);
+        console.log(` Stock is available for ${product_id}, checking cart`);
 
         db.query("SELECT * FROM cart WHERE user_id = ? AND product_id = ?", [user_id, product_id], (err, cartResults) => {
             if (err) {
-                console.error("❌ Database error when checking cart:", err);
+                console.error(" Database error when checking cart:", err);
                 return res.status(500).json({ error: "Database error" });
             }
 
@@ -197,22 +197,22 @@ app.post("/add-to-cart", (req, res) => {
 
                 db.query("UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ?", [quantity, user_id, product_id], (err) => {
                     if (err) {
-                        console.error("❌ Failed to update cart:", err);
+                        console.error(" Failed to update cart:", err);
                         return res.status(500).json({ error: "Failed to update cart" });
                     }
-                    console.log("✅ Cart updated successfully");
+                    console.log(" Cart updated successfully");
                     res.json({ message: "Cart updated successfully" });
                 });
 
             } else {
-                console.log("➕ Adding new item to cart");
+                console.log(" Adding new item to cart");
 
                 db.query("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)", [user_id, product_id, quantity], (err) => {
                     if (err) {
-                        console.error("❌ Failed to add to cart:", err);
+                        console.error(" Failed to add to cart:", err);
                         return res.status(500).json({ error: "Failed to add to cart" });
                     }
-                    console.log("✅ Item added to cart");
+                    console.log(" Item added to cart");
                     res.json({ message: "Item added to cart" });
                 });
             }
@@ -223,18 +223,18 @@ app.post("/add-to-cart", (req, res) => {
 
 app.delete("/cart/:id", (req, res) => {
     const cartId = req.params.id;
-    console.log(`🗑 Removing item with cart_id: ${cartId}`); // Debug log
+    console.log(` Removing item with cart_id: ${cartId}`); // Debug log
 
     db.query("DELETE FROM cart WHERE sno = ?", [cartId], (err, results) => {
         if (err) {
-            console.error("❌ Failed to remove item:", err);
+            console.error(" Failed to remove item:", err);
             return res.status(500).json({ error: "Failed to remove item" });
         }
         if (results.affectedRows === 0) {
-            console.log(`⚠ No item found with cart_id: ${cartId}`);
+            console.log(` No item found with cart_id: ${cartId}`);
             return res.status(404).json({ message: "Item not found" });
         }
-        console.log(`✅ Item removed successfully`);
+        console.log(` Item removed successfully`);
         res.json({ message: "Item removed successfully" });
     });
 });
@@ -259,7 +259,7 @@ app.put('/cart/decrease/:sno', async (req, res) => {
         }
 
     } catch (error) {
-        console.error("❌ Error decreasing quantity:", error);
+        console.error(" Error decreasing quantity:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
@@ -271,7 +271,7 @@ app.post("/checkout", (req, res) => {
     const { user_id, phone, address } = req.body;
 
     if (!user_id || !phone || !address) {
-        console.log("❌ Missing required fields for checkout:", req.body);
+        console.log(" Missing required fields for checkout:", req.body);
         return res.status(400).json({ error: "Missing fields" });
     }
 
@@ -291,7 +291,7 @@ app.post("/checkout", (req, res) => {
 
     db.query(getCartQuery, [user_id], (err, results) => {
         if (err || results.length === 0) {
-            console.error("❌ Failed to fetch user/cart data:", err);
+            console.error(" Failed to fetch user/cart data:", err);
             return res.status(500).json({ error: "Failed to process order" });
         }
 
@@ -344,18 +344,18 @@ app.post("/checkout", (req, res) => {
 
                         db.query(insertOrderItemsQuery, [orderItemsValues], (orderItemsErr) => {
                             if (orderItemsErr) {
-                                console.error("❌ Failed to insert order items:", orderItemsErr);
+                                console.error(" Failed to insert order items:", orderItemsErr);
                                 return res.status(500).json({ error: "Failed to save order items" });
                             }
 
                             // Clear cart after successful order
                             db.query("DELETE FROM cart WHERE user_id = ?", [user_id], (deleteErr) => {
                                 if (deleteErr) {
-                                    console.error("❌ Failed to clear cart after checkout:", deleteErr);
+                                    console.error(" Failed to clear cart after checkout:", deleteErr);
                                     return res.status(500).json({ error: "Failed to clear cart" });
                                 }
 
-                                console.log(`✅ Order placed: ${order_no} for user ${user_id}`);
+                                console.log(` Order placed: ${order_no} for user ${user_id}`);
                                 res.json({ message: "Order placed successfully", order_no });
                             });
                         });
@@ -363,7 +363,7 @@ app.post("/checkout", (req, res) => {
                 );
             })
             .catch(stockUpdateErr => {
-                console.error("❌ Stock update failed:", stockUpdateErr);
+                console.error(" Stock update failed:", stockUpdateErr);
                 res.status(500).json({ error: "Stock update failed" });
             });
     });
@@ -398,7 +398,7 @@ app.get("/admin/products", (req, res) => {
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error("❌ Error fetching products for admin:", err);
+            console.error(" Error fetching products for admin:", err);
             return res.status(500).json({ error: "Database error" });
         }
         
@@ -409,7 +409,7 @@ app.get("/admin/products", (req, res) => {
 app.get("/admin/orders", (req, res) => {
     db.query("SELECT * FROM orders ORDER BY order_no DESC", (err, results) => {
         if (err) {
-            console.error("❌ Failed to fetch orders:", err);
+            console.error(" Failed to fetch orders:", err);
             return res.status(500).json({ error: "Failed to fetch orders" });
         }
         res.json(results);
@@ -428,7 +428,7 @@ app.get("/admin/all-orders", (req, res) => {
 
     db.query(query, (err, results) => {
         if (err) {
-            console.error("❌ Failed to fetch all orders:", err);
+            console.error(" Failed to fetch all orders:", err);
             return res.status(500).json({ error: "Failed to fetch all orders" });
         }
 
@@ -468,7 +468,7 @@ app.post("/admin/update-stock", (req, res) => {
         [stock_quantity, product_id],
         (err) => {
             if (err) {
-                console.error("❌ Failed to update stock:", err);
+                console.error(" Failed to update stock:", err);
                 return res.status(500).json({ error: "Failed to update stock" });
             }
             res.json({ message: "Stock updated successfully" });
@@ -485,13 +485,13 @@ app.get("/user/orders/:user_id", (req, res) => {
         FROM orders o
         JOIN order_items oi ON o.order_no = oi.order_no
         JOIN products p ON oi.product_id = p.product_id
-        WHERE o.user_id = ?  -- ✅ Only fetch orders for this user
+        WHERE o.user_id = ?  --  Only fetch orders for this user
         ORDER BY o.order_no DESC;
     `;
 
     db.query(query, [user_id], (err, results) => {
         if (err) {
-            console.error("❌ Failed to fetch user orders:", err);
+            console.error(" Failed to fetch user orders:", err);
             return res.status(500).json({ error: "Failed to fetch orders" });
         }
 
@@ -522,4 +522,4 @@ app.get("/user/orders/:user_id", (req, res) => {
 
 
 // Start Server
-app.listen(port, () => console.log(`✅ Server running on http://localhost:${port}`));
+app.listen(port, () => console.log(` Server running on http://localhost:${port}`));

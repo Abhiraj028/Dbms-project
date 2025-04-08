@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ JavaScript Loaded");
+    console.log(" JavaScript Loaded");
 
     const loginForm = document.getElementById("loginForm");
 
     if (!loginForm) {
-        console.error("❌ loginForm NOT FOUND.");
+        console.error(" loginForm NOT FOUND.");
         return;
     }
 
@@ -22,20 +22,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const result = await response.json();
-            console.log("🔍 Login Response:", result);
+            console.log(" Login Response:", result);
 
             if (response.ok && result.user_id) {
                 localStorage.setItem("user_id", result.user_id);
                 localStorage.setItem("is_admin", result.is_admin); // Store is_admin flag
-                console.log(`✅ Redirecting to /user.html`);
+                console.log(` Redirecting to /user.html`);
                 window.location.href = "/user"; // Always go to user page first
             }
              else {
-                console.error("❌ user_id is missing in response");
+                console.error(" user_id is missing in response");
                 alert(result.message);
             }
         } catch (error) {
-            console.error("❌ Login error:", error);
+            console.error(" Login error:", error);
         }
     });
 });

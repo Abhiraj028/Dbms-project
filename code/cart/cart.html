@@ -9,27 +9,32 @@
 <body>
     <nav class="navbar">
         <h1>Shopping Cart</h1>
-        <a href="/user/user.html">Shop</a>
-        <a href="/orders/orders.html">Orders</a>
+        <div class="nav-links">
+            <a href="/user/user.html">Shop</a>
+            <a href="/user/userOrders.html">Orders</a>
+          </div>
+          
     </nav>
 
     <div class="cart-container">
-        <!-- Cart Items Section -->
+        
         <section class="cart-items" id="cartItems">
-            <!-- Cart items will be dynamically loaded here -->
+
+
         </section>
 
-        <!-- Cart Summary Section -->
+
         <aside class="cart-summary">
             <h2>Order Summary</h2>
             <p>Total: <span id="totalPrice">0</span> INR</p>
-            <input type="text" id="phone" placeholder="Enter phone number">
-            <input type="text" id="address" placeholder="Enter address">
+            <div class="inputs">
+                <input type="text" id="phone" placeholder="Enter phone number">
+                <input type="text" id="address" placeholder="Enter address">                
+            </div>
             <button id="checkoutButton">Checkout</button>
         </aside>
     </div>
 
-    <!-- Link to JavaScript File -->
     <script src="cart.js"></script>
 </body>
 </html>

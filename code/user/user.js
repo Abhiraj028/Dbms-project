@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let products = [];
 
-    // ✅ Extract user_id from URL or localStorage
+    //  Extract user_id from or localStorage
     function getQueryParam(param) {
         return new URLSearchParams(window.location.search).get(param);
     }
@@ -24,12 +24,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     })();
 
     if (!user_id) {
-        alert("⚠ Please log in to view products.");
+        alert(" Please log in to view products.");
         window.location.href = "/login.html"; // Redirect if not logged in
         return;
     }
 
-    console.log("✅ User ID:", user_id);
+    console.log(" User ID:", user_id);
 
     async function fetchProducts() {
         try {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             products = await response.json();
             renderProducts(products);
         } catch (error) {
-            console.error("❌ Error fetching products:", error);
+            console.error(" Error fetching products:", error);
         }
     }
 
@@ -111,13 +111,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                     const result = await response.json();
                     if (response.ok) {
-                        alert("✅ Added to cart!");
+                        alert(" Added to cart!");
                     } else {
-                        alert(result.message || "❌ Failed to add to cart.");
+                        alert(result.message || " Failed to add to cart.");
                     }
                 } catch (error) {
-                    console.error("❌ Error adding to cart:", error);
-                    alert("❌ Failed to add to cart.");
+                    console.error(" Error adding to cart:", error);
+                    alert(" Failed to add to cart.");
                 }
             });
         });

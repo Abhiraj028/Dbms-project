@@ -43,7 +43,7 @@
         </aside>
         
         <section class="product-grid" id="productGrid">
-            <!-- Products will be loaded here dynamically -->
+            
         </section>
     </div>
     
@@ -58,8 +58,8 @@
                     const isAdmin = localStorage.getItem("is_admin");
         
                     if (isAdmin !== "1") { // Not an admin
-                        event.preventDefault(); // Stop navigation
-                        alert("❌ Access Denied: You are not an admin!");
+                        event.preventDefault(); 
+                        alert(" Access Denied: You are not an admin!");
                     }
                 });
             }

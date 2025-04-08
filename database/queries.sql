@@ -1,7 +1,7 @@
 -- Get all products with basic filtering
 SELECT * FROM products 
-WHERE 1=1
-    AND category IN ('Jackets', 'Fleece', 'T-Shirts', 'Backpacks')
+WHERE 
+    category IN ('Jackets', 'Fleece', 'T-Shirts', 'Backpacks')
     AND selling_price >= 0
     AND selling_price <= 100000
 ORDER BY id;
@@ -79,12 +79,6 @@ AND selling_price BETWEEN 2000 AND 8000
 AND stock_status = 'In Stock'
 ORDER BY selling_price ASC;
 
--- 6. Get all products sorted by discount percentage
-SELECT *, 
-    ROUND(((mrp - selling_price) / mrp) * 100) as discount_percentage
-FROM products 
-WHERE selling_price < mrp
-ORDER BY discount_percentage DESC;
 
 -- 7. Get all products with stock status and price range
 SELECT * FROM products 
@@ -174,9 +168,6 @@ FROM cart c
 JOIN products p ON c.product_id = p.id
 WHERE c.user_id = ?;
 
--- Transaction Management
--- Start transaction
-START TRANSACTION;
 
 -- Update stock after order placement
 UPDATE products 
@@ -191,9 +182,3 @@ VALUES (?, ?, ?, (SELECT mrp FROM products WHERE id = ?), (SELECT selling_price 
 
 -- Remove from cart after order
 DELETE FROM cart WHERE user_id = ? AND product_id = ?;
-
--- Commit transaction
-COMMIT;
-
--- Rollback transaction (in case of error)
-ROLLBACK; 

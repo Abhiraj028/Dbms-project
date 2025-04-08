@@ -34,7 +34,7 @@ async function fetchOrders() {
             ordersContainer.appendChild(orderCard);
         });
     } catch (error) {
-        console.error("❌ Error fetching orders:", error);
+        console.error(" Error fetching orders:", error);
     }
 }
 

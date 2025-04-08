@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const user_id = localStorage.getItem("user_id");
 
     if (!user_id) {
-        alert("⚠ Please log in to view your orders.");
+        alert(" Please log in to view your orders.");
         window.location.href = "/login.html"; // Redirect to login if not logged in
         return;
     }
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ordersContainer.innerHTML = "";
 
             if (orders.length === 0) {
-                ordersContainer.innerHTML = "<p>You have no past orders 📦</p>";
+                ordersContainer.innerHTML = "<p>You have no past orders </p>";
                 return;
             }
 
@@ -43,8 +43,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
         } catch (error) {
-            console.error("❌ Error fetching orders:", error);
-            ordersContainer.innerHTML = "<p>⚠ Failed to load orders. Please try again later.</p>";
+            console.error(" Error fetching orders:", error);
+            ordersContainer.innerHTML = "<p> Failed to load orders. Please try again later.</p>";
         }
     }
 
